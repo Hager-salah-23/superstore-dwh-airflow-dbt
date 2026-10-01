@@ -1,0 +1,24 @@
+name: 'air_project'
+version: '1.0.0'
+profile: 'air_project'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  air_project:
+    staging:
+      +schema: stg
+      +materialized: view
+
+    marts:
+      +schema: dwh
+      +materialized: table

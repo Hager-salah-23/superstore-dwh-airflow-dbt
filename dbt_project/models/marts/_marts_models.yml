@@ -1,0 +1,112 @@
+version: 2
+
+models:
+  - name: fct_order_items
+    description: One row per order line item, with measures and foreign keys to every dimension.
+    columns:
+      - name: row_id
+        description: Order line identifier (grain of the fact)
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Order identifier
+        tests:
+          - not_null
+      - name: customer_id
+        description: FK to dim_customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: product_id
+        description: FK to dim_products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: geography_key
+        description: FK to dim_geography
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_key
+      - name: order_date
+        description: FK to dim_dates
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_day
+      - name: ship_date
+        description: FK to dim_dates
+        tests:
+          - relationships:
+              to: ref('dim_dates')
+              field: date_day
+      - name: sales
+        description: Sales amount
+      - name: quantity
+        description: Units ordered
+      - name: discount
+        description: Discount rate applied
+      - name: profit
+        description: Profit amount
+      - name: cost
+        description: Derived cost (sales - profit)
+      - name: profit_margin
+        description: Profit / sales (0 when sales is 0)
+
+  - name: dim_customers
+    description: One row per customer.
+    columns:
+      - name: customer_id
+        description: Customer identifier
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        description: Customer full name
+      - name: segment
+        description: Customer segment (Consumer, Corporate, Home Office)
+        tests:
+          - accepted_values:
+              values: ['Consumer', 'Corporate', 'Home Office']
+
+  - name: dim_products
+    description: One row per product.
+    columns:
+      - name: product_id
+        description: Product identifier
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Product name
+      - name: category
+        description: Product category
+      - name: sub_category
+        description: Product sub-category
+
+  - name: dim_geography
+    description: One row per postal code / city / state combination.
+    columns:
+      - name: geography_key
+        description: Surrogate key over postal_code, city, state
+        tests:
+          - unique
+          - not_null
+      - name: region
+        description: Sales region
+
+  - name: dim_dates
+    description: Calendar attributes for every order and ship date.
+    columns:
+      - name: date_day
+        description: Calendar date
+        tests:
+          - unique
+          - not_null

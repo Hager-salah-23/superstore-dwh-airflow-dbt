@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: ods
+    schema: ods
+    tables:
+      - name: Superstore
+        description: Raw Superstore data loaded into DuckDB
